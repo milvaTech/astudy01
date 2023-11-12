@@ -15,6 +15,7 @@ public class Astudy01Application {
 
 	@GetMapping("/welcome")
 	public String welcome(){
+		//test
 		return "Welcome to MilvaTech";
 	}
 }
