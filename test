@@ -1,0 +1,25 @@
+
+FROM openjdk:21-ea-17-jdk-slim-buster
+ADD target/projTest03-0.0.1.jar app.jar
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom","-Duser.timezone=GMT", "-jar", "/app.jar"]
+
+###############################################3
+
+#stage 1: build the application
+FROM MAVEN:3.8.4-openjdk-a7 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean install
+
+#state 2: run the application
+FROM openjdk: 17-alpine
+WORKDIR /app
+COPY --from=build  /app/target/aws-0.0.1-SNAPSHOT.jar ./demo-aws.jar
+EXPOSE 8080
+CMD ["java", "-jar", "demo-aws.jar"]
+
+#to build the image for the app (-t is for tag name)
+#docker buildx build --platform linux/amd64 -t moha/aws-demo:1.0 .
+#push image app to dockerHup
+#docker push moha/aws-demo:1.0
