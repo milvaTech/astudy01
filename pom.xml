@@ -36,7 +36,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>astudy01</finalName>
+		<finalName>astudy01-action</finalName>
 	</build>
 
 </project>
