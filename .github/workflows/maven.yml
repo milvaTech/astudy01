@@ -6,15 +6,19 @@
 # separate terms of service, privacy policy, and support
 # documentation.
 
-name: Java CI with Maven flow
+name: project cicd flow
+
 on:
   push:
-    branches: [ "master" ]
+    branches: [ master ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ master ]
+
 jobs:
   build:
+
     runs-on: ubuntu-latest
+
     steps:
     - name: Checkout source
     - uses: actions/checkout@v3
@@ -24,6 +28,7 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+
     - name: Build project with Maven
       run: mvn clean install
     - name: Build & push Docker image
