@@ -1,0 +1,48 @@
+# This workflow will build a Java project with Maven,
+#and cache/restore any dependencies to improve the workflow execution time
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-java-with-maven
+
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+name: Java CICD with Maven flow
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    steps:
+    - name: Checkout source
+    - uses: actions/checkout@v3
+    - name: Set up Java
+      uses: actions/setup-java@v3
+      with:
+        java-version: '17'
+        distribution: 'temurin'
+        cache: maven
+    - name: Build project with Maven
+      run: mvn clean install -DskipTests
+    - name: Login to docker hub
+      run: docker login -u ${{ secrets.DOCKER_USERNAME }} ${{ secrets.DOCKER_PASSWORD }}
+    - name: Build docker image
+      run: docker build -t simodocker19/astudy01-action .
+    - name: Publish image to docker hub
+      run: docker push simodocker19/astudy01-action:latest
+
+  deploy:
+    needs: build
+    run-on: [myaws-ec2]
+    steps:
+      - name: Pull the image from docker
+        run: docker pull simodocker19/astudy01-action:latest
+      - name: Delete old container
+        run: docker rm -f astudy01-action-container
+      - name: run docker container
+        run: docker run -d -p 8080:8080 --name astudy01-action-container simodocker19/astudy01-action:latest
