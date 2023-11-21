@@ -1,4 +1,4 @@
-name: Java CI with Maven
+name: Java CICD with Maven flow
 
 on:
   push:
@@ -8,22 +8,26 @@ on:
 
 jobs:
   build:
-
-    runs-on: ubuntu-latest
-
+    runs-on: [ubuntu-latest]
     steps:
-      - uses: actions/checkout@v3
-      - name: Set up JDK 17
+      - name: Checkout source
+        uses: actions/checkout@v3
+
+      - name: Set up Java
         uses: actions/setup-java@v3
         with:
           java-version: '17'
           distribution: 'temurin'
           cache: maven
+
       - name: Build project with Maven
         run: mvn clean install
+
       - name: Login to docker hub
-        run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }} ${{ secrets.DOCKER_PASSWORD }}
+
       - name: Build docker image
         run: docker build -t simodocker19/astudy01-action .
+
       - name: Publish image to docker hub
         run: docker push simodocker19/astudy01-action:latest
