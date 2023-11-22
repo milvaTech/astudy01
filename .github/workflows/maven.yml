@@ -30,12 +30,12 @@ jobs:
         run: docker push simodocker19/astudy01-action:latest
   deploy:
     needs: build
-    run-on: [aws-ec2]
+    run-on: [Self-hosted]
     steps:
       - name: Pull Image from docker hub
         run: docker pull simodocker19/astudy01-action:latest
       - name: Delete old container
-        run: docker rm -f simodocker19/astudy01-action:latest
+        run: docker rm -f simodocker19/astudy01-action
       - name: Run docker container
         run: docker run -d -p 8080:8080 --name astudy01-action-container simodocker19/astudy01-action:latest
 
