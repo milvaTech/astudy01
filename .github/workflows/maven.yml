@@ -30,7 +30,7 @@ jobs:
         run: docker push simodocker19/astudy01-action:latest
   deploy:
     needs: build
-    run-on: [Self-hosted]
+    run-on: [self-hosted]
     steps:
       - name: Pull Image from docker hub
         run: docker pull simodocker19/astudy01-action:latest
