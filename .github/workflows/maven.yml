@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: [ubuntu-latest]
+    runs-on: [self-hosted]
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -22,12 +22,20 @@ jobs:
 
       - name: Build project with Maven
         run: mvn clean install
-
       - name: Login to docker hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }}  -p ${{ secrets.DOCKER_PASSWORD }}
-
       - name: Build docker image
         run: docker build -t simodocker19/astudy01-action .
-
       - name: Publish image to docker hub
         run: docker push simodocker19/astudy01-action:latest
+  deploy:
+    needs: build
+    run-on: [aws-ec2]
+    steps:
+      - name: Pull Image from docker hub
+        run: docker pull simodocker19/astudy01-action:latest
+      - name: Delete old container
+        run: docker rm -f simodocker19/astudy01-action:latest
+      - name: Run docker container
+        run: docker run -d -p 8080:8080 --name astudy01-action-container simodocker19/astudy01-action:latest
+
