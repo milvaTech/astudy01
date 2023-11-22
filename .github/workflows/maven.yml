@@ -32,6 +32,8 @@ jobs:
     needs: build
     runs-on: myrunner1
     steps:
+      - name: Login to docker hub to pull image
+        run: docker login -u ${{ secrets.DOCKER_USERNAME }}  -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Pull Image from docker hub
         run: docker pull simodocker19/astudy01-action:latest
       - name: Delete old container
