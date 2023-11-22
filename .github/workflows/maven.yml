@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: [ubuntu-latest]
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout source
         uses: actions/checkout@v3
@@ -30,7 +30,7 @@ jobs:
         run: docker push simodocker19/astudy01-action:latest
   deploy:
     needs: build
-    run-on: [self-hosted]
+    run-on: self-hosted
     steps:
       - name: Pull Image from docker hub
         run: docker pull simodocker19/astudy01-action:latest
